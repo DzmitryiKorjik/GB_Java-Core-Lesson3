@@ -1,0 +1,54 @@
+class Fruit {
+    // Суперкласс для фруктов
+}
+
+class Apple extends Fruit {
+    // Класс для яблок
+}
+
+class Orange extends Fruit {
+    // Класс для апельсинов
+}
+
+class Box<T extends Fruit> {
+    private ArrayList<T> fruits;
+
+    public Box() {
+        fruits = new ArrayList<T>();
+    }
+
+    public void add(T fruit) {
+        fruits.add(fruit);
+    }
+
+    public float getWeight() {
+        if (fruits.size() == 0) {
+            return 0.0f;
+        }
+        float weight = 0.0f;
+        for (T fruit : fruits) {
+            weight += fruit instanceof Apple ? 1.0f : 1.5f;
+        }
+        return weight;
+    }
+
+    public boolean compare(Box<?> other) {
+        return Math.abs(getWeight() - other.getWeight()) < 0.0001f;
+    }
+
+    public void transfer(Box<? super T> other) {
+        if (this == other) {
+            return;
+        }
+        for (T fruit : fruits) {
+            if (fruit instanceof Apple && other instanceof Box<Orange>) {
+                throw new RuntimeException("Cannot transfer apples to box of oranges");
+            }
+            if (fruit instanceof Orange && other instanceof Box<Apple>) {
+                throw new RuntimeException("Cannot transfer oranges to box of apples");
+            }
+            other.add(fruit);
+        }
+        fruits.clear();
+    }
+}
